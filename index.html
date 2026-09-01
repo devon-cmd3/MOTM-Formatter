@@ -148,5 +148,39 @@
             </div>
         </form>
     </main>
+
+    <div id="toastStack" class="toast-stack" aria-live="polite"></div>
+
+    <template id="actionItemTemplate">
+        <div class="action-item glass-inset" data-row>
+            <span class="action-item-index" data-index></span>
+            <div class="action-item-fields">
+                <label class="field">
+                    <span class="field-label">Task</span>
+                    <input type="text" data-field="task" placeholder="What needs to happen" />
+                </label>
+                <label class="field">
+                    <span class="field-label">Person responsible</span>
+                    <input type="text" data-field="person" placeholder="Owner" />
+                </label>
+                <label class="field">
+                    <span class="field-label">Due date</span>
+                    <input type="date" data-field="dueDate" />
+                </label>
+                <label class="field">
+                    <span class="field-label">Status</span>
+                    <select data-field="status">
+                        <option value="Pending">Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Overdue">Overdue</option>
+                    </select>
+                </label>
+            </div>
+            <button type="button" class="row-remove" data-remove aria-label="Remove action item">&times;</button>
+        </div>
+    </template>
+
+    <script src="script.js"></script>
 </body>
 </html>

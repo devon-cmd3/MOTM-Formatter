@@ -4,8 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MOTM Formatter</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    
+    <div class="'bg-blobs" aria-hidden="true">
+        <span class="blob blob-a"></span>
+        <span class="blob blob-b"></span>
+        <span class="blob blob-c"></span>
+    </div>
+
+    <header class="topbar">
+        <div class="topbar-inner glass">
+            <div class="brand">
+                <span class="brand-mark">
+                    <span class="g g1">G</span><span class="g g2">o</span><span class="g g3">o</span><span class="g g1">g</span><span class="g g4">l</span><span class="g g2">e</span>
+                    <span class="brand-rest">Developer Groups</span>
+                </span>
+            <span class="brand-sub">On Campus Xavier Ateneo &nbsp;·&nbsp; MOTM Formatter</span>
+            </div>
+            
+            <div class="topbar-actions">
+                <span id="statusPill" class="status-pill" hidden></span>
+                <button type="submit" form="motmForm" id="generateBtn" class="btn btn-primary">
+                    <span class="btn-label">Generate PDF</span>
+                    <span class="btn-spinner" hidden></span>
+                </button>
+            </div>
+        </div>
+    </header>
 </body>
 </html>

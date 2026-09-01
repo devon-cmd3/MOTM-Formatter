@@ -22,7 +22,7 @@
                 </span>
             <span class="brand-sub">On Campus Xavier Ateneo &nbsp;·&nbsp; MOTM Formatter</span>
             </div>
-            
+
             <div class="topbar-actions">
                 <span id="statusPill" class="status-pill" hidden></span>
                 <button type="submit" form="motmForm" id="generateBtn" class="btn btn-primary">
@@ -32,5 +32,121 @@
             </div>
         </div>
     </header>
+
+    <main class="page">
+        <section class="intro">
+            <h1>Turn raw meeting notes into a ready‑to‑send MOTM.</h1>
+            <p>Fill in what happened during the meeting. The formatter sorts everything into the official Minutes of the Meeting layout and hands you back a finished PDF.</p>
+        </section>
+
+        <form id="motmForm" class="sheet glass" novalidate>
+            <div class="field-row">
+                <label class="field field-grow" for="meetingTitle">
+                <span class="field-label">Meeting title / subject</span>
+                <input type="text" id="meetingTitle" name="meetingTitle" placeholder="e.g. Weekly Core Team Sync" required />
+                </label>
+            </div>
+
+            <div class="field-row three">
+                <label class="field" for="meetingDate">
+                    <span class="field-label">Date</span>
+                    <input type="date" id="meetingDate" name="meetingDate" required />
+                </label>
+                <label class="field" for="meetingTime">
+                    <span class="field-label">Time</span>
+                    <input type="time" id="meetingTime" name="meetingTime" required />
+                </label>
+                <label class="field" for="modeLocation">
+                    <span class="field-label">Mode / location</span>
+                    <input type="text" id="modeLocation" name="modeLocation" placeholder="Google Meet / CTC Room 301" required />
+                </label>
+            </div>
+
+            <div class="field-row two">
+                <label class="field" for="attendees">
+                    <span class="field-label">Attendees</span>
+                    <textarea id="attendees" name="attendees" rows="3" placeholder="One name per line" required></textarea>
+                </label>
+                <label class="field" for="absentees">
+                    <span class="field-label">Absentees <em>(optional)</em></span>
+                    <textarea id="absentees" name="absentees" rows="3" placeholder="One name per line"></textarea>
+                </label>
+            </div>
+
+            <div class="field-row three">
+                <label class="field" for="facilitator">
+                    <span class="field-label">Facilitator</span>
+                    <input type="text" id="facilitator" name="facilitator" required />
+                </label>
+                <label class="field" for="noteTaker">
+                    <span class="field-label">Note taker</span>
+                    <input type="text" id="noteTaker" name="noteTaker" required />
+                </label>
+                <label class="field" for="timeAllotted">
+                    <span class="field-label">Time allotted</span>
+                    <input type="text" id="timeAllotted" name="timeAllotted" placeholder="e.g. 45 minutes" required />
+                </label>
+            </div>
+
+            <hr class="divider" />
+
+            <div class="section-head">
+                <h2>Discussion</h2>
+                <p>What was talked about — decisions, updates, context. This goes straight into the Discussion box.</p>
+            </div>
+            <label class="field" for="discussion">
+                <span class="field-label sr-only">Discussion notes</span>
+                <textarea id="discussion" name="discussion" rows="7" placeholder="Summarize the discussion..." required></textarea>
+            </label>
+
+            <hr class="divider" />
+
+            <div class="section-head">
+                <h2>Action items</h2>
+                <p>Every task, its owner, its due date, and where it stands.</p>
+            </div>
+
+            <div id="actionItemsList" class="action-items"></div>
+            <button type="button" id="addActionItem" class="btn btn-ghost btn-small">+ Add action item</button>
+
+            <hr class="divider" />
+
+            <div class="field-row three">
+                <label class="field" for="adjournedAt">
+                <span class="field-label">Meeting adjourned at</span>
+                <input type="time" id="adjournedAt" name="adjournedAt" required />
+                </label>
+            </div>
+
+            <hr class="divider" />
+
+            <div class="section-head">
+                <h2>Documentation</h2>
+                <p>Pictures, screenshots, or a note on where the photo opportunity is. Optional.</p>
+            </div>
+
+            <label class="field" for="documentationNotes">
+                <span class="field-label">Notes <em>(optional)</em></span>
+                <textarea id="documentationNotes" name="documentationNotes" rows="3" placeholder="e.g. Group photo taken after the meeting, see attached."></textarea>
+            </label>
+
+            <label class="field upload-field">
+                <span class="field-label">Attach images <em>(optional, up to 6)</em></span>
+                <div class="upload-drop" id="uploadDrop">
+                    <input type="file" id="imageInput" accept="image/png, image/jpeg" multiple hidden />
+                    <button type="button" id="uploadBtn" class="btn btn-ghost btn-small">Choose images</button>
+                    <span class="upload-hint">PNG or JPEG</span>
+                </div>
+                <div id="imagePreviewList" class="image-preview-list"></div>
+            </label>
+
+            <div class="form-footer">
+                <button type="button" id="resetBtn" class="btn btn-ghost">Reset form</button>
+                <button type="submit" class="btn btn-primary">
+                    <span class="btn-label">Generate PDF</span>
+                </button>
+            </div>
+        </form>
+    </main>
 </body>
 </html>

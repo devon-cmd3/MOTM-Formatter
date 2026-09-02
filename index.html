@@ -18,32 +18,29 @@
             <div class="brand">
                 <span class="brand-mark">
                     <span class="g g1">G</span><span class="g g2">o</span><span class="g g3">o</span><span class="g g1">g</span><span class="g g4">l</span><span class="g g2">e</span>
-                    <span class="brand-rest">Developer Groups</span>
+                    <span class="brand-rest">Developer Groups on Campus</span>
                 </span>
-            <span class="brand-sub">On Campus Xavier Ateneo &nbsp;·&nbsp; MOTM Formatter</span>
+            <span class="brand-sub">Xavier Ateneo &nbsp;·&nbsp; MOTM Formatter</span>
             </div>
 
             <div class="topbar-actions">
                 <span id="statusPill" class="status-pill" hidden></span>
-                <button type="submit" form="motmForm" id="generateBtn" class="btn btn-primary">
-                    <span class="btn-label">Generate PDF</span>
-                    <span class="btn-spinner" hidden></span>
-                </button>
+                <img src="logo.png" alt="GDG On Campus Xavier Ateneo logo" class="topbar-logo" />
             </div>
         </div>
     </header>
 
     <main class="page">
         <section class="intro">
-            <h1>Turn raw meeting notes into a ready‑to‑send MOTM.</h1>
-            <p>Fill in what happened during the meeting. The formatter sorts everything into the official Minutes of the Meeting layout and hands you back a finished PDF.</p>
+            <h1>Minutes of the Meeting</h1>
+            <p>Please fill in on what happened during the meeting. The formatter sorts everything into the GDGC layout and hands you back a finished PDF.</p>
         </section>
 
         <form id="motmForm" class="sheet glass" novalidate>
             <div class="field-row">
                 <label class="field field-grow" for="meetingTitle">
                 <span class="field-label">Meeting title / subject</span>
-                <input type="text" id="meetingTitle" name="meetingTitle" placeholder="e.g. Weekly Core Team Sync" required />
+                <input type="text" id="meetingTitle" name="meetingTitle" placeholder="e.g. GAOT 2027" required />
                 </label>
             </div>
 
@@ -142,8 +139,9 @@
 
             <div class="form-footer">
                 <button type="button" id="resetBtn" class="btn btn-ghost">Reset form</button>
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" id="generateBtn" class="btn btn-primary">
                     <span class="btn-label">Generate PDF</span>
+                    <span class="btn-spinner" hidden></span>
                 </button>
             </div>
         </form>

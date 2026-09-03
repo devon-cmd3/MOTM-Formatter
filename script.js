@@ -123,14 +123,14 @@ function validateForm(payload) {
     clearInvalid();
 
     const requiredFields = [
-        ["meetingTitle", "Meeting title / subject"],
+        ["meetingTitle", "Meeting Title / Subject"],
         ["meetingDate", "Date"],
         ["meetingTime", "Time"],
-        ["modeLocation", "Mode / location"],
+        ["modeLocation", "Mode / Location"],
         ["attendees", "Attendees"],
         ["facilitator", "Facilitator"],
-        ["noteTaker", "Note taker"],
-        ["timeAllotted", "Time allotted"],
+        ["noteTaker", "Note Taker"],
+        ["timeAllotted", "Time Allotted"],
         ["discussion", "Discussion"],
         ["adjournedAt", "Meeting adjourned at"],
     ];

@@ -9,7 +9,7 @@ const MOTM_COLORS = {
     gGreen: [52, 168, 83],
 };
 
-const MOTM_LOGO_SRC = "logo.png";
+const MOTM_LOGO_SRC = "logo2.png";
 const MOTM_LOGO_MAX = { width: 130, height: 56 };
 
 function loadImageElement(src) {
@@ -131,7 +131,7 @@ async function generateMotmPdf(payload, filename) {
         if (logoImg) {
             const dims = scaledDims(logoImg.naturalWidth, logoImg.naturalHeight, MOTM_LOGO_MAX.width, MOTM_LOGO_MAX.height);
             if (dims.w) {
-                doc.addImage(logoImg, "JPEG", pageWidth - M - dims.w, topY - 4, dims.w, dims.h);
+                doc.addImage(logoImg, "PNG", pageWidth - M - dims.w, topY - 4, dims.w, dims.h);
             }
         }
 
@@ -372,7 +372,7 @@ async function generateMotmPdf(payload, filename) {
     function drawDocumentationPage() {
         doc.addPage();
         state.y = contentTop;
-        drawLetterhead(false);
+        drawLetterhead(true);
 
         drawSectionHeaderBar("Documentation (pictures/screenshots/photo opportunity)");
         state.y += 10;

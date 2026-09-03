@@ -33,7 +33,7 @@
     <main class="page">
         <section class="intro">
             <h1>Minutes of the Meeting</h1>
-            <p>Please fill in on what happened during the meeting. The formatter sorts everything into the GDGC layout and hands you back a finished PDF.</p>
+            <p>Please fill in every box which each respective point discussed during the meeting. The formatter will automatically generate a PDF file with the Google Developer Groups on Campus (GDGC) layout for further utilization.</p>
         </section>
 
         <form id="motmForm" class="sheet glass" novalidate>
@@ -55,7 +55,7 @@
                 </label>
                 <label class="field" for="modeLocation">
                     <span class="field-label">Mode / Location</span>
-                    <input type="text" id="modeLocation" name="modeLocation" placeholder="Google Meet / CTC Room 301" required />
+                    <input type="text" id="modeLocation" name="modeLocation" placeholder="Google Meet / FH 104" required />
                 </label>
             </div>
 
@@ -128,7 +128,7 @@
             </label>
 
             <label class="field upload-field">
-                <span class="field-label">Attach images <em>(optional, up to 6)</em></span>
+                <span class="field-label">Attach images <em>(optional, maximum 6)</em></span>
                 <div class="upload-drop" id="uploadDrop">
                     <input type="file" id="imageInput" accept="image/png, image/jpeg" multiple hidden />
                     <button type="button" id="uploadBtn" class="btn btn-ghost btn-small">Choose images</button>

@@ -1,4 +1,3 @@
-
 const MOTM_COLORS = {
     textPrimary: [29, 29, 31],
     textSecondary: [110, 110, 115],
@@ -9,6 +8,18 @@ const MOTM_COLORS = {
     gYellow: [251, 188, 5],
     gGreen: [52, 168, 83],
 };
+
+const MOTM_LOGO_SRC = "logo.png";
+const MOTM_LOGO_MAX = { width: 130, height: 56 };
+
+function loadImageElement(src) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error(`Could not load ${src}`));
+        img.src = src;
+    });
+}
 
 const MOTM_LAYOUT = {
     margin: 42,
@@ -31,7 +42,16 @@ async function generateMotmPdf(payload, filename) {
 
     const state = { y: contentTop };
 
-    // Preload natural dimensions for any attached images (needed to keep aval aspect ratio).
+    // preload the org logo. if it's missing, just carry on without it
+    let logoImg = null;
+    try {
+        logoImg = await loadImageElement(MOTM_LOGO_SRC);
+    } catch (err) {
+        console.warn("MOTM logo not loaded, generating without it:", err.message);
+    }
+
+    // preload natural dimensions for any attached images
+    // needed to keep available ratio
     const images = await Promise.all(
         (payload.images || []).map(
         (img) =>
@@ -108,6 +128,13 @@ async function generateMotmPdf(payload, filename) {
         const x = M;
         const topY = state.y;
 
+        if (logoImg) {
+            const dims = scaledDims(logoImg.naturalWidth, logoImg.naturalHeight, MOTM_LOGO_MAX.width, MOTM_LOGO_MAX.height);
+            if (dims.w) {
+                doc.addImage(logoImg, "JPEG", pageWidth - M - dims.w, topY - 4, dims.w, dims.h);
+            }
+        }
+
         drawGoogleWord(x, topY + 12, 15);
         const googleWidth = textWidth("Google", "bold", 15);
         text(" Developer Groups", x + googleWidth, topY + 12, "bold", 15, MOTM_COLORS.textPrimary);
@@ -115,17 +142,17 @@ async function generateMotmPdf(payload, filename) {
         text("On Campus Xavier Ateneo", x, topY + 32, "bold", 15, MOTM_COLORS.textPrimary);
 
         if (full) {
-        text(
-            "Xavier University - Ateneo de Cagayan Corrales Ave., Cagayan de Oro City",
-            x,
-            topY + 48,
-            "normal",
-            9,
-            MOTM_COLORS.textSecondary
-        );
-        state.y = topY + 62;
+            text(
+                "Xavier University - Ateneo de Cagayan Corrales Ave., Cagayan de Oro City",
+                x,
+                topY + 48,
+                "normal",
+                9,
+                MOTM_COLORS.textSecondary
+            );
+            state.y = topY + 62;
         } else {
-        state.y = topY + 42;
+            state.y = topY + 42;
         }
 
         hLine(M, pageWidth - M, state.y, 0.75, MOTM_COLORS.border);
@@ -143,8 +170,7 @@ async function generateMotmPdf(payload, filename) {
         state.y += 22;
     }
 
-  // meeting detail table
-
+    // meeting detail table
     function drawRow(label, valueLines) {
         const valueColWidth = contentWidth - MOTM_LAYOUT.labelCol;
         const lines = valueLines.length ? valueLines : [""];
@@ -162,8 +188,8 @@ async function generateMotmPdf(payload, filename) {
 
         let lineY = top + 15;
         for (const line of lines) {
-        text(line, valueX + MOTM_LAYOUT.cellPad, lineY, "normal", 10, MOTM_COLORS.textPrimary);
-        lineY += MOTM_LAYOUT.lineLead;
+            text(line, valueX + MOTM_LAYOUT.cellPad, lineY, "normal", 10, MOTM_COLORS.textPrimary);
+            lineY += MOTM_LAYOUT.lineLead;
         }
 
         state.y = top + rowHeight;
@@ -229,32 +255,30 @@ async function generateMotmPdf(payload, filename) {
         const pageUsableHeight = contentBottom - contentTop;
 
         if (boxHeight <= pageUsableHeight) {
-        ensureSpace(boxHeight);
-        const top = state.y;
-        strokeRect(M, top, contentWidth, boxHeight);
+            ensureSpace(boxHeight);
+            const top = state.y;
+            strokeRect(M, top, contentWidth, boxHeight);
 
-        let lineY = top + 14;
-        for (const line of lines) {
-            text(line, M + MOTM_LAYOUT.cellPad, lineY, "normal", 10, MOTM_COLORS.textPrimary);
-            lineY += MOTM_LAYOUT.lineLead;
-        }
-        state.y = top + boxHeight;
-        } else {
-        // Very long discussion: flow across pages without a fixed-height border.
-        state.y += 4;
-        for (const line of lines) {
-            ensureSpace(MOTM_LAYOUT.lineLead);
-            state.y += MOTM_LAYOUT.lineLead * 0.8;
-            text(line, M + MOTM_LAYOUT.cellPad, state.y, "normal", 10, MOTM_COLORS.textPrimary);
-            state.y += MOTM_LAYOUT.lineLead * 0.2;
-        }
+            let lineY = top + 14;
+            for (const line of lines) {
+                text(line, M + MOTM_LAYOUT.cellPad, lineY, "normal", 10, MOTM_COLORS.textPrimary);
+                lineY += MOTM_LAYOUT.lineLead;
+            }
+            state.y = top + boxHeight;
+        } else { // very long discussion: flow across pages without a fixed-height border
+            state.y += 4;
+            for (const line of lines) {
+                ensureSpace(MOTM_LAYOUT.lineLead);
+                state.y += MOTM_LAYOUT.lineLead * 0.8;
+                text(line, M + MOTM_LAYOUT.cellPad, state.y, "normal", 10, MOTM_COLORS.textPrimary);
+                state.y += MOTM_LAYOUT.lineLead * 0.2;
+            }
         }
 
         state.y += 16;
     }
 
     // action items
-
     function drawActionHeaderRow(widths, headers) {
         const h = MOTM_LAYOUT.rowMinH;
         ensureSpace(h);
@@ -263,9 +287,9 @@ async function generateMotmPdf(payload, filename) {
 
         fillRect(M, top, contentWidth, h, MOTM_COLORS.headerFill);
         for (let i = 0; i < widths.length; i++) {
-        strokeRect(x, top, widths[i], h);
-        text(headers[i], x + MOTM_LAYOUT.cellPad, top + 15, "bold", 9.5, MOTM_COLORS.textPrimary);
-        x += widths[i];
+            strokeRect(x, top, widths[i], h);
+            text(headers[i], x + MOTM_LAYOUT.cellPad, top + 15, "bold", 9.5, MOTM_COLORS.textPrimary);
+            x += widths[i];
         }
         state.y = top + h;
     }
@@ -279,13 +303,13 @@ async function generateMotmPdf(payload, filename) {
         let x = M;
 
         for (let i = 0; i < widths.length; i++) {
-        strokeRect(x, top, widths[i], rowHeight);
-        let lineY = top + 15;
-        for (const line of cols[i]) {
-            text(line, x + MOTM_LAYOUT.cellPad, lineY, "normal", 9.5, MOTM_COLORS.textPrimary);
-            lineY += MOTM_LAYOUT.lineLead;
-        }
-        x += widths[i];
+            strokeRect(x, top, widths[i], rowHeight);
+            let lineY = top + 15;
+            for (const line of cols[i]) {
+                text(line, x + MOTM_LAYOUT.cellPad, lineY, "normal", 9.5, MOTM_COLORS.textPrimary);
+                lineY += MOTM_LAYOUT.lineLead;
+            }
+            x += widths[i];
         }
         state.y = top + rowHeight;
     }
@@ -300,36 +324,35 @@ async function generateMotmPdf(payload, filename) {
 
         const items = payload.actionItems || [];
         if (!items.length) {
-        drawActionRow(widths, [["No action items recorded."], [""], [""], [""]]);
-        state.y += 16;
-        return;
+            drawActionRow(widths, [["No action items recorded."], [""], [""], [""]]);
+            state.y += 16;
+            return;
         }
 
         for (const item of items) {
-        const taskLines = wrap(item.task, widths[0] - MOTM_LAYOUT.cellPad * 2);
-        const personLines = wrap(item.person, widths[1] - MOTM_LAYOUT.cellPad * 2);
-        const dateLines = wrap(item.dueDate, widths[2] - MOTM_LAYOUT.cellPad * 2);
-        const statusLines = wrap(item.status, widths[3] - MOTM_LAYOUT.cellPad * 2);
-        const cols = [taskLines, personLines, dateLines, statusLines];
+            const taskLines = wrap(item.task, widths[0] - MOTM_LAYOUT.cellPad * 2);
+            const personLines = wrap(item.person, widths[1] - MOTM_LAYOUT.cellPad * 2);
+            const dateLines = wrap(item.dueDate, widths[2] - MOTM_LAYOUT.cellPad * 2);
+            const statusLines = wrap(item.status, widths[3] - MOTM_LAYOUT.cellPad * 2);
+            const cols = [taskLines, personLines, dateLines, statusLines];
 
-        const maxLines = Math.max(...cols.map((c) => c.length || 1));
-        const rowHeight = Math.max(MOTM_LAYOUT.rowMinH, maxLines * MOTM_LAYOUT.lineLead + MOTM_LAYOUT.cellPad * 2);
+            const maxLines = Math.max(...cols.map((c) => c.length || 1));
+            const rowHeight = Math.max(MOTM_LAYOUT.rowMinH, maxLines * MOTM_LAYOUT.lineLead + MOTM_LAYOUT.cellPad * 2);
 
-        if (state.y + rowHeight > contentBottom) {
-            doc.addPage();
-            state.y = contentTop;
-            drawSectionHeaderBar("Action Items (continued)");
-            drawActionHeaderRow(widths, headers);
-        }
+            if (state.y + rowHeight > contentBottom) {
+                doc.addPage();
+                state.y = contentTop;
+                drawSectionHeaderBar("Action Items (continued)");
+                drawActionHeaderRow(widths, headers);
+            }
 
-        drawActionRow(widths, cols);
+            drawActionRow(widths, cols);
         }
 
         state.y += 16;
     }
 
     // documentation
-
     function getImageFormat(dataUrl) {
         return dataUrl.indexOf("image/png") !== -1 ? "PNG" : "JPEG";
     }
@@ -340,8 +363,8 @@ async function generateMotmPdf(payload, filename) {
         let w = maxWidth;
         let h = w / ratio;
         if (h > maxHeight) {
-        h = maxHeight;
-        w = h * ratio;
+            h = maxHeight;
+            w = h * ratio;
         }
         return { w, h };
     }
@@ -356,19 +379,19 @@ async function generateMotmPdf(payload, filename) {
 
         if (payload.documentationNotes) {
         const lines = wrap(payload.documentationNotes, contentWidth);
-        for (const line of lines) {
-            ensureSpace(MOTM_LAYOUT.lineLead);
-            state.y += MOTM_LAYOUT.lineLead * 0.8;
-            text(line, M, state.y, "normal", 10, MOTM_COLORS.textPrimary);
-            state.y += MOTM_LAYOUT.lineLead * 0.2;
-        }
-        state.y += 10;
+            for (const line of lines) {
+                ensureSpace(MOTM_LAYOUT.lineLead);
+                state.y += MOTM_LAYOUT.lineLead * 0.8;
+                text(line, M, state.y, "normal", 10, MOTM_COLORS.textPrimary);
+                state.y += MOTM_LAYOUT.lineLead * 0.2;
+            }
+            state.y += 10;
         }
 
         if (!images.length) {
-        text("No images attached.", M, state.y + 12, "italic", 10, MOTM_COLORS.textSecondary);
-        state.y += 20;
-        return;
+            text("No images attached.", M, state.y + 12, "italic", 10, MOTM_COLORS.textSecondary);
+            state.y += 20;
+            return;
         }
 
         const gap = 14;
@@ -376,29 +399,28 @@ async function generateMotmPdf(payload, filename) {
         const maxImgHeight = 200;
 
         for (let i = 0; i < images.length; i += 2) {
-        const left = images[i];
-        const right = i + 1 < images.length ? images[i + 1] : null;
+            const left = images[i];
+            const right = i + 1 < images.length ? images[i + 1] : null;
 
-        const leftDims = scaledDims(left.width, left.height, cellWidth, maxImgHeight);
-        const rightDims = right ? scaledDims(right.width, right.height, cellWidth, maxImgHeight) : { w: 0, h: 0 };
+            const leftDims = scaledDims(left.width, left.height, cellWidth, maxImgHeight);
+            const rightDims = right ? scaledDims(right.width, right.height, cellWidth, maxImgHeight) : { w: 0, h: 0 };
 
-        const rowHeight = Math.max(leftDims.h, rightDims.h) + 8;
-        ensureSpace(rowHeight);
-        const top = state.y;
+            const rowHeight = Math.max(leftDims.h, rightDims.h) + 8;
+            ensureSpace(rowHeight);
+            const top = state.y;
 
-        if (leftDims.w) {
-            doc.addImage(left.dataUrl, getImageFormat(left.dataUrl), M, top, leftDims.w, leftDims.h);
-        }
-        if (right && rightDims.w) {
-            doc.addImage(right.dataUrl, getImageFormat(right.dataUrl), M + cellWidth + gap, top, rightDims.w, rightDims.h);
-        }
+            if (leftDims.w) {
+                doc.addImage(left.dataUrl, getImageFormat(left.dataUrl), M, top, leftDims.w, leftDims.h);
+            }
+            if (right && rightDims.w) {
+                doc.addImage(right.dataUrl, getImageFormat(right.dataUrl), M + cellWidth + gap, top, rightDims.w, rightDims.h);
+            }
 
-        state.y = top + rowHeight;
+            state.y = top + rowHeight;
         }
     }
 
     // assemble
-
     drawLetterhead(true);
     drawTitle();
     drawMeetingDetailsTable();

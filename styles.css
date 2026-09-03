@@ -154,11 +154,49 @@ body {
 }
 
 .btn-primary {
+    position: relative;
+    overflow: hidden;
     color: #fff;
     background: var(--accent-1);
     box-shadow: 0 1px 2px rgba(60, 64, 67, 0.3), 0 1px 3px rgba(60, 64, 67, 0.15);
+    transition: box-shadow 0.35s ease, transform 0.15s ease;
 }
-.btn-primary:hover {background: var(--accent-2); transform: translateY(-1px);}
+
+/* when you're done hovering over the button, it flashes white so I added this. I hate css */
+.btn-primary::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--g-blue), var(--g-red), var(--g-yellow), var(--g-green), var(--g-blue));
+    background-size: 300% 300%;
+    animation: google-shift 3s ease infinite;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.btn-primary > * {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-primary:hover {
+    box-shadow:
+        0 0 14px rgba(66, 133, 244, 0.5),
+        0 0 14px rgba(234, 67, 53, 0.35),
+        0 0 14px rgba(251, 188, 5, 0.35),
+        0 0 14px rgba(52, 168, 83, 0.35);
+    transform: translateY(-1px);
+}
+
+.btn-primary:hover::before {
+    opacity: 1;
+}
+
+@keyframes google-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
 .btn-primary:active {transform: translateY(0) scale(0.98);}
 .btn-primary:disabled {opacity: 0.6; cursor: default; transform: none;}
 
@@ -195,7 +233,6 @@ body {
 
 .intro {
     padding: 0 8px 28px;
-    max-width: 640px;
 }
 
 .intro h1 {
@@ -325,7 +362,7 @@ select.field-invalid {
 
 .action-item {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 12px;
     padding: 16px;
 }
@@ -342,7 +379,6 @@ select.field-invalid {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 4px;
 }
 
 .action-item-fields {
@@ -367,8 +403,14 @@ select.field-invalid {
     font-size: 1.1rem;
     line-height: 1;
     cursor: pointer;
-    margin-top: 4px;
-    transition: background 0.15s ease, transform 0.15s ease;
+    opacity: 0;
+    visibility: hidden;
+    transition: background 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+}
+.action-item:hover .row-remove,
+.row-remove:focus-visible {
+    opacity: 1;
+    visibility: visible;
 }
 .row-remove:hover {background: rgba(255, 59, 48, 0.18);}
 .row-remove:active {transform: scale(0.9);}
